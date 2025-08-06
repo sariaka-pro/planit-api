@@ -51,4 +51,6 @@ public class AuthController {
 
         this.logDocumentService.addLog("login called: " + request.getUsername(), now);
 
-        return ResponseEntity.ok(new AuthResponse(
+        return ResponseEntity.ok(new AuthResponse(token));
+    }
+}
