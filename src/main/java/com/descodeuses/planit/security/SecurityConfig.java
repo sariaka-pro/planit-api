@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,12 +23,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${allowCorsOrigins}") // Injecte la valeur de 'jwt.secret' depuis application.properties
+    private String allowCorsOrigins;
+
     @Autowired
     private JwtFilter jwtFilter;
-
-
-    @Value("${allowCorsOrigins}") // Injecte la valeur de 'jwt.secret' depuis application.properties
-    private String origins;
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -43,10 +41,8 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/api/**").permitAll()
-                .requestMatchers(HttpMethod.OPTIONS,"/api/**")
-                    .hasAnyRole("USER", "ADMIN")
-                    .anyRequest().authenticated()
+                .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN")
+                .anyRequest().authenticated()
                 )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
             
@@ -63,8 +59,8 @@ public class SecurityConfig {
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(origins)); // Or specify origins
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedOrigins(List.of(allowCorsOrigins)); // Or specify origins
+        config.setAllowedMethods(List.of("*"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

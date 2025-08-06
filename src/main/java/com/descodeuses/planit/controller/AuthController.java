@@ -28,9 +28,10 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
     private LogDocumentService logDocumentService;  
 
-    /// l'quivalent du constructor
+    /// l'équivalent du constructor
     public AuthController(
         AuthenticationManager authenticationManager,
         JwtUtil jwtUtil,
@@ -50,6 +51,4 @@ public class AuthController {
 
         this.logDocumentService.addLog("login called: " + request.getUsername(), now);
 
-        return ResponseEntity.ok(new AuthResponse(token));
-    }
-}
+        return ResponseEntity.ok(new AuthResponse(
