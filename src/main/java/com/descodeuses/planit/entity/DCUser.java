@@ -25,6 +25,20 @@ public class DCUser {
     private String lastname;
     private String genre; 
 
+     // ===== Constructeurs =====
+
+    // Constructeur vide requis par JPA
+    public DCUser() {}
+
+    // Constructeur complet pour l'inscription
+    public DCUser(String lastname, String firstname, String genre, String username,String password) {
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.genre = genre;
+        this.username = username;
+        this.password = password;
+        this.role = "USER"; // valeur par défaut
+    }
 
     public String getUsername() {
         return username;
